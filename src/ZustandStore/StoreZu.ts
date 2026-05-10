@@ -1,15 +1,25 @@
-import axios from "axios";
+
 import { create } from "zustand";
+import type { CurrencyResponse } from '../Types/Types.ts'
+import { getApi, DataPrice } from "../Services/ServiceCrypto.tsx";
 
-
-async function GetApi() {
-    const url = '/asset/v2/metadata?assets=BTC&asset_lookup_priority=SYMBOL&quote_asset=USD&asset_language=en-US'
-    const {data : {Data}} = await axios(url)
-    console.log(Data)
+type cryptoStore = {
+    crypto: CurrencyResponse,
+    fetchCrypto: () => Promise<void>
+    fetchData: (pair: { currency: string, cryptocurrency: string }) => Promise<void>  // ✅ tipo explícito
 }
 
-export const UseCrypto = create(() => ({
-    fetchCrypto: () => {
-        GetApi()
+export const UseCrypto = create<cryptoStore>((set) => ({
+    crypto: [],
+    fetchCrypto: async () => {
+        const crypto = await getApi()
+        set({ crypto })
+    },
+    fetchData: async (pai: typeof pair) => {
+        await DataPrice(pai)  
+        // Aca me quede 
     }
 }))
+
+
+
